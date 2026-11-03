@@ -120,7 +120,7 @@ export function HeroSection() {
         <section className="relative isolate min-h-screen overflow-hidden bg-black" >
             <video
                 ref={videoRef}
-                src="/videos/arovia-about-hero.mp4"
+                src="https://res.cloudinary.com/dbkljfljd/video/upload/v1793711442/arovia/root/arovia-about-hero_rt2yqa.mp4"
                 autoPlay
                 muted
                 loop
