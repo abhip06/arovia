@@ -1,0 +1,51 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${API_IMAGE:-healthcare-store-api:local}
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_HTTP_PORTS: "8080"
+
+      # Supply managed database/cache connection strings through your deployment secrets.
+      ConnectionStrings__PostgreSql: ${POSTGRES_CONNECTION_STRING:?Set POSTGRES_CONNECTION_STRING}
+      ConnectionStrings__MongoDb: ${MONGODB_CONNECTION_STRING:?Set MONGODB_CONNECTION_STRING}
+      ConnectionStrings__Redis: ${REDIS_CONNECTION_STRING:?Set REDIS_CONNECTION_STRING}
+      MongoDb__DatabaseName: ${MONGODB_DATABASE_NAME:-healthcare_store}
+
+      # Set this to the exact public frontend origin for deployment.
+      Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN:-http://localhost:3000}
+
+      Jwt__Issuer: ${JWT_ISSUER:-HealthcareStore.Api}
+      Jwt__Audience: ${JWT_AUDIENCE:-HealthcareStore}
+      Jwt__SigningKey: ${JWT_SIGNING_KEY:?Set JWT_SIGNING_KEY to a secret of at least 32 characters}
+      Jwt__AccessTokenLifetimeMinutes: ${JWT_ACCESS_TOKEN_LIFETIME_MINUTES:-15}
+
+      # Cross-site frontend/API deployments need SameSite=None and Secure cookies.
+      # If both hosts share the same site (for example, app.example.com and api.example.com), Lax may be used.
+      Authentication__RefreshTokenCookie__SameSite: ${REFRESH_TOKEN_COOKIE_SAMESITE:-None}
+      Authentication__RefreshTokenCookie__Secure: ${REFRESH_TOKEN_COOKIE_SECURE:-true}
+      Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID:?Set GOOGLE_CLIENT_ID}
+      Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET:?Set GOOGLE_CLIENT_SECRET}
+
+      Email__VerificationBaseUrl: ${EMAIL_VERIFICATION_BASE_URL:?Set EMAIL_VERIFICATION_BASE_URL}
+      Email__PasswordResetBaseUrl: ${EMAIL_PASSWORD_RESET_BASE_URL:?Set EMAIL_PASSWORD_RESET_BASE_URL}
+      Email__SmtpHost: ${SMTP_HOST:-smtp.gmail.com}
+      Email__SmtpPort: ${SMTP_PORT:-587}
+      Email__SmtpUsername: ${SMTP_USERNAME:?Set SMTP_USERNAME}
+      Email__SmtpPassword: ${SMTP_PASSWORD:?Set SMTP_PASSWORD}
+      Email__SenderName: ${EMAIL_SENDER_NAME:-Arovia}
+
+      Payments__Razorpay__KeyId: ${RAZORPAY_KEY_ID:?Set RAZORPAY_KEY_ID}
+      Payments__Razorpay__KeySecret: ${RAZORPAY_KEY_SECRET:?Set RAZORPAY_KEY_SECRET}
+      Payments__Razorpay__WebhookSecret: ${RAZORPAY_WEBHOOK_SECRET:-}
+
+      Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME:?Set CLOUDINARY_CLOUD_NAME}
+      Cloudinary__ApiKey: ${CLOUDINARY_API_KEY:?Set CLOUDINARY_API_KEY}
+      Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET:?Set CLOUDINARY_API_SECRET}

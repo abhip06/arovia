@@ -1,0 +1,19 @@
+# Local full-stack orchestration. Production VM deployments use backend/docker-compose.yml directly.
+include:
+  - path: ./backend/docker-compose.yml
+
+services:
+  web:
+    profiles: ["local"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api}
+    image: ${WEB_IMAGE:-healthcare-store-web:local}
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - api

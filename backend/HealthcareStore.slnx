@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HealthcareStore.Api/HealthcareStore.Api.csproj" Id="3e4cc9f2-dc9e-4d15-b4f5-ca8a8ad7f10e" />
+    <Project Path="src/HealthcareStore.Application/HealthcareStore.Application.csproj" Id="843d20d8-ef7a-46ea-a5b2-842eff80b679" />
+    <Project Path="src/HealthcareStore.Domain/HealthcareStore.Domain.csproj" Id="aea3ea97-4ada-4a1e-9530-b71a4f249fda" />
+    <Project Path="src/HealthcareStore.Infrastructure/HealthcareStore.Infrastructure.csproj" Id="d11017af-82e1-4890-91ee-cc289d7ae11f" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HealthcareStore.Application.Tests/HealthcareStore.Application.Tests.csproj" Id="e803dce0-841e-48bf-a541-d7dce8862879" />
+    <Project Path="tests/HealthcareStore.Domain.Tests/HealthcareStore.Domain.Tests.csproj" Id="02294771-0ba9-46e2-92bd-2d4b08300d7b" />
+    <Project Path="tests/HealthcareStore.Infrastructure.Tests/HealthcareStore.Infrastructure.Tests.csproj" Id="a823d555-e86c-482c-aeee-6bc7808c6158" />
+  </Folder>
+</Solution>

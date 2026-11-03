@@ -1,0 +1,20 @@
+# Git
+.git/
+.gitignore
+
+# IDE
+.vs/
+.vscode/
+
+# Build artifacts
+**/bin/
+**/obj/
+**/TestResults/
+
+# Development seed images
+**/SeedData/Images/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
