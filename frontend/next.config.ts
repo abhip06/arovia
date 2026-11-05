@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  output: process.env.VERCEL ? undefined : "standalone",
   images: {
     remotePatterns: [
       {
@@ -20,7 +20,6 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
-  allowedDevOrigins: ['10.49.119.164'],
 };
 
 export default nextConfig;
