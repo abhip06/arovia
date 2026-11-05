@@ -13,6 +13,9 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
       ASPNETCORE_HTTP_PORTS: "8080"
 
+      # Forwarded Headers for Proxy
+      ForwardedHeaders__KnownProxy: ${FORWARDED_HEADERS_KNOWN_PROXY:?Set FORWARDED_HEADERS_KNOWN_PROXY}
+
       # Supply managed database/cache connection strings through your deployment secrets.
       ConnectionStrings__PostgreSql: ${POSTGRES_CONNECTION_STRING:?Set POSTGRES_CONNECTION_STRING}
       ConnectionStrings__MongoDb: ${MONGODB_CONNECTION_STRING:?Set MONGODB_CONNECTION_STRING}
@@ -49,3 +52,9 @@ services:
       Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME:?Set CLOUDINARY_CLOUD_NAME}
       Cloudinary__ApiKey: ${CLOUDINARY_API_KEY:?Set CLOUDINARY_API_KEY}
       Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET:?Set CLOUDINARY_API_SECRET}
+    networks:
+      - arovia-network
+networks:
+  arovia-network:
+    external: true
+    name: arovia-network

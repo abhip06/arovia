@@ -70,11 +70,13 @@ using HealthcareStore.Infrastructure.Persistence.MongoDb;
 using HealthcareStore.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using QuestPDF.Infrastructure;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -319,6 +321,42 @@ builder.Services.AddRateLimiter(options =>
     RateLimitPolicies.AddPolicies(options);
 });
 
+// Forwarded Headers Configuration
+var knownProxyValue =
+    builder.Configuration["ForwardedHeaders:KnownProxy"];
+
+IPAddress? knownProxyAddress = null;
+
+if (!string.IsNullOrWhiteSpace(knownProxyValue))
+{
+    if (!IPAddress.TryParse(
+            knownProxyValue,
+            out knownProxyAddress))
+    {
+        throw new InvalidOperationException(
+            "Forwarded proxy address is invalid.");
+    }
+}
+else if (builder.Environment.IsProduction())
+{
+    throw new InvalidOperationException(
+        "ForwardedHeaders:KnownProxy must be configured in Production.");
+}
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    options.ForwardLimit = 1;
+
+    if (knownProxyAddress is not null)
+    {
+        options.KnownProxies.Add(knownProxyAddress);
+    }
+});
+
 // App Initialization
 var app = builder.Build();
 
@@ -334,12 +372,13 @@ await using (var scope = app.Services.CreateAsyncScope())
 }
 
 // Middleware Pipeline
+app.UseForwardedHeaders();
+
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
-app.UseCors("Frontend");
-
 app.UseRouting();
+app.UseCors("Frontend");
 app.UseRateLimiter();
 
 app.UseAuthentication();
